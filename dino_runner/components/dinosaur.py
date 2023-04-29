@@ -3,7 +3,7 @@ from pygame.sprite import Sprite
 
 import pygame
 
-from dino_runner.utils.constants import RUNNING, JUMPING
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING
 ##RUNNING CTRL+. Y aparecen opciones
 
 JUMP_VELOCITY=8.5
@@ -35,11 +35,19 @@ class dinosaur(Sprite):
                 self.rect.y=Y_INITIAL
                 self.action="running"
                 self.jump_velocity=JUMP_VELOCITY
+        elif self.action=="bend":
+            self.image=DUCKING[0] if self.step < 5 else DUCKING[1]
+            self.step+=1
+            if self.step==9 and not user_input[pygame.K_DOWN]:
+                self.image=RUNNING[0] if self.step < 5 else RUNNING[1]
+                self.action="running"
 
         if user_input[pygame.K_UP] and self.action!="jumping":
             self.action="jumping"
         elif self.action=="jumping":
             self.action="running"
+        elif user_input[pygame.K_DOWN]:
+            self.action="bend"
             ##cada vez que termina de hacer un salto, se vuelve a poner a correr en el aire xd
         
         if self.step>=10:
