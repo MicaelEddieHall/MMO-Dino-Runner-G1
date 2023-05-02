@@ -10,6 +10,13 @@ JUMP_VELOCITY=8.5
 Y_INITIAL=310
 X_INITIAL=80
 Y_D_DUCKING=30
+S_JUMPING="jumping"
+S_RUNNING="running"
+S_BEND="bend"
+
+##del update separar cada una de las 3 acciones en 3 metodos
+##ademas tomar en cuenta que en el bend debemos actualizar la recta para evitar bugs con los obstaculos
+
 
 ##esta heredando sprite a dinosaur
 class dinosaur(Sprite):
@@ -20,48 +27,62 @@ class dinosaur(Sprite):
         self.rect.y=Y_INITIAL##arriba hacia abajo se cuenta
 
         self.step=0
-        self.action="running"
+        self.action=S_RUNNING
         self.jump_velocity=JUMP_VELOCITY
         self.d_ducking=True
+        self.y_current=Y_INITIAL
 
-    def update(self, user_input):
-        if self.action=="running":
-            self.image=RUNNING[0] if self.step < 5 else RUNNING[1]
-            self.step+=1
-        elif self.action=="jumping":## and user_input[pygame.K_UP]:
-            self.image=JUMPING
-            self.rect.y-=self.jump_velocity*4
-            self.jump_velocity -=0.8
-            
-            if self.jump_velocity < -JUMP_VELOCITY:
-                self.rect.y=Y_INITIAL
-                self.action="running"
-                self.jump_velocity=JUMP_VELOCITY
-        elif self.action=="bend":
-            self.image=DUCKING[0] if self.step < 5 else DUCKING[1]
-            if self.d_ducking:
-                self.rect.y+=Y_D_DUCKING
-                self.d_ducking=False
-            self.step+=1
-            if not user_input[pygame.K_DOWN]:
-                self.image=RUNNING[0] if self.step < 5 else RUNNING[1]
-                self.action="running"
-                self.rect.y-=Y_D_DUCKING
-                self.d_ducking=True
+    
+    def run(self):
+        self.image=RUNNING[0] if self.step < 5 else RUNNING[1]
+        self.rect=self.image.get_rect()
+        self.rect.y=self.y_current
+        self.step+=1
 
-        if user_input[pygame.K_UP] and self.action!="jumping":
-            self.action="jumping"
-        elif self.action=="jumping":
-            self.action="running"
-        elif user_input[pygame.K_DOWN]:
-            self.action="bend"
-            ##cada vez que termina de hacer un salto, se vuelve a poner a correr en el aire xd
+    def bend(self):
+        self.image=DUCKING[0] if self.step < 5 else DUCKING[1]
+        self.rect=self.image.get_rect()
+        self.rect.y=self.y_current+Y_D_DUCKING
+        self.step+=1
+
+    def jumping(self):
+        self.image=JUMPING
+        self.rect.y-=self.jump_velocity*4
+        self.y_current=self.rect.y
+        self.jump_velocity-=0.8
         
+    
+    def update(self, user_input):
+        if user_input[pygame.K_UP] and self.action!=S_JUMPING:
+            self.action=S_JUMPING
+        elif self.action==S_JUMPING:
+            self.action=S_RUNNING
+        elif user_input[pygame.K_DOWN]:
+            self.action=S_BEND
+
+        if self.action==S_RUNNING:
+            self.run()
+        elif self.action==S_JUMPING:## and user_input[pygame.K_UP]:
+            if self.jump_velocity < -JUMP_VELOCITY:
+                self.y_current=Y_INITIAL
+                self.action=S_RUNNING
+                self.jump_velocity=JUMP_VELOCITY
+                self.run()
+            else:
+                self.jumping()
+        elif self.action==S_BEND:
+            self.bend()
+
+            if not user_input[pygame.K_DOWN]:
+                self.run()
+                self.action=S_RUNNING
+        
+        self.rect.x=X_INITIAL
+
         if self.step>=10:
             self.step=0
 
-
-
+    
     def draw(self, screen):
         screen.blit(self.image,(self.rect.x,self.rect.y))##cada blit es una capa de dibujo
 
