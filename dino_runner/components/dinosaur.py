@@ -6,7 +6,7 @@ import pygame
 from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING
 ##RUNNING CTRL+. Y aparecen opciones
 
-JUMP_VELOCITY=8.5
+JUMP_VELOCITY=8
 Y_INITIAL=310
 X_INITIAL=80
 Y_D_DUCKING=30
@@ -50,33 +50,27 @@ class dinosaur(Sprite):
         self.rect.y-=self.jump_velocity*4
         self.y_current=self.rect.y
         self.jump_velocity-=0.8
+
         
     
     def update(self, user_input):
-        if user_input[pygame.K_UP] and self.action!=S_JUMPING:
+        if user_input[pygame.K_UP]:
             self.action=S_JUMPING
-        elif self.action==S_JUMPING:
-            self.action=S_RUNNING
-        elif user_input[pygame.K_DOWN]:
-            self.action=S_BEND
-
-        if self.action==S_RUNNING:
-            self.run()
-        elif self.action==S_JUMPING:## and user_input[pygame.K_UP]:
+            self.jumping()
+            ##print(self.jump_velocity," ",self.rect.y)
+            ##se ejecuta 2 veces por cada pulsacion, no es un error de codigo, sino de mi teclado al pa
             if self.jump_velocity < -JUMP_VELOCITY:
                 self.y_current=Y_INITIAL
                 self.action=S_RUNNING
                 self.jump_velocity=JUMP_VELOCITY
                 self.run()
-            else:
-                self.jumping()
-        elif self.action==S_BEND:
+        elif user_input[pygame.K_DOWN]:
+            self.action=S_BEND
             self.bend()
+        else:
+            self.action=S_RUNNING
+            self.run()
 
-            if not user_input[pygame.K_DOWN]:
-                self.run()
-                self.action=S_RUNNING
-        
         self.rect.x=X_INITIAL
 
         if self.step>=10:

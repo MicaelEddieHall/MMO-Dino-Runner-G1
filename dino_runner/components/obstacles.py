@@ -9,7 +9,7 @@ class obstacles:
 
     def update(self, game_speed, obstacles):
         self.rect.x-=game_speed
-        if self.rect.x<-self.rect.width:
+        if self.rect.x<0:
             obstacles.pop()
 
 
