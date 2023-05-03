@@ -27,6 +27,7 @@ class Game:
         self.obstacle_manager=ObstacleManager()
         self.score=Score()
         self.dead_count=0
+        self.max_score=0
 
     def run(self):
         # Game loop: events - update - draw
@@ -49,7 +50,8 @@ class Game:
             self.update()
             self.draw()
         print("hmm")
-        pygame.quit()
+        ##doble pygame.quit() genera un self.screen.fill
+        ##pygame.quit()
 
     def events(self):
         for event in pygame.event.get():
@@ -98,9 +100,13 @@ class Game:
         ##mostrar puntaje obtenido, al parecer las 3 en una misma ventana
         ##abstraer el codigo de generar texto en medio, para que nos pregunte donde y en que tamaño dibujar
         
-        if self.dead_count==0:
-            self.dibuja_texto("Press any key to start",center_x,center_y)
-        else:
+        if self.dead_count!=0:
+            self.dibuja_texto(f"{self.dead_count}",center_x,center_y+50)
+
+            if self.max_score<self.score.score:
+                self.max_score=self.score.score
+            self.dibuja_texto(f"max score: {self.max_score}",center_x,center_y+100)
+            self.dibuja_texto(f"death count: {self.dead_count}",center_x,center_y+150)
             #agregar un texto de inicio en la pantalla
             ##font=pygame.font.Font('freesansbold.ttf',30)
             ##render convierte texto en surface
@@ -110,8 +116,7 @@ class Game:
             ##self.screen.blit(text,text_rect)
 
             ##aca usa el dibujar texto 2 veces 
-            self.dibuja_texto(f"{self.dead_count}",center_x,center_y)
-            self.dibuja_texto("Press any key to start",center_x,center_y+50)
+        self.dibuja_texto("Press any key to start",center_x,center_y+50)
 
 
             #agregar una imagen en la pantalla
