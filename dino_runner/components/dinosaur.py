@@ -3,7 +3,7 @@ from pygame.sprite import Sprite
 
 import pygame
 
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING,DEFAULT_TYPE,SHIELD_TYPE,RUNNING_SHIELD,DUCKING_SHIELD,JUMPING_SHIELD
 ##RUNNING CTRL+. Y aparecen opciones
 
 JUMP_VELOCITY=8
@@ -14,6 +14,10 @@ S_JUMPING="jumping"
 S_RUNNING="running"
 S_BEND="bend"
 
+DUCKING_IMG={DEFAULT_TYPE: DUCKING,SHIELD_TYPE : DUCKING_SHIELD}
+RUNNING_IMG={DEFAULT_TYPE: RUNNING,SHIELD_TYPE : RUNNING_SHIELD}
+JUMPING_IMG={DEFAULT_TYPE: RUNNING,SHIELD_TYPE : JUMPING_SHIELD}
+
 ##del update separar cada una de las 3 acciones en 3 metodos
 ##ademas tomar en cuenta que en el bend debemos actualizar la recta para evitar bugs con los obstaculos
 
@@ -21,7 +25,8 @@ S_BEND="bend"
 ##esta heredando sprite a dinosaur
 class dinosaur(Sprite):
     def __init__(self):
-        self.image=RUNNING[0]
+        self.type=DEFAULT_TYPE
+        self.image=RUNNING_IMG[self.type][0]
         self.rect=self.image.get_rect()
         self.rect.x=X_INITIAL##izquierda a derecha
         self.rect.y=Y_INITIAL##arriba hacia abajo se cuenta
@@ -31,16 +36,16 @@ class dinosaur(Sprite):
         self.jump_velocity=JUMP_VELOCITY
         self.d_ducking=True
         self.y_current=Y_INITIAL
-
+        
     
     def run(self):
-        self.image=RUNNING[0] if self.step < 5 else RUNNING[1]
+        self.image=RUNNING_IMG[self.type][self.step//5]
         self.rect=self.image.get_rect()
         self.rect.y=self.y_current
         self.step+=1
 
     def bend(self):
-        self.image=DUCKING[0] if self.step < 5 else DUCKING[1]
+        self.image=DUCKING_IMG[self.type][self.step//5]
         self.rect=self.image.get_rect()
         self.rect.y=self.y_current+Y_D_DUCKING
         self.step+=1
@@ -81,5 +86,5 @@ class dinosaur(Sprite):
         screen.blit(self.image,(self.rect.x,self.rect.y))##cada blit es una capa de dibujo
 
     def on_pick_power_up(self,power_up):
-        print(power_up.type)
-        pass
+        self.type=power_up.type
+        self.power_up_time_up=power_up.start_time + (power_up.duration*1000)
