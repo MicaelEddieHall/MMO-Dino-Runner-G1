@@ -6,7 +6,7 @@ import pygame
 from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING,DEFAULT_TYPE,SHIELD_TYPE,RUNNING_SHIELD,DUCKING_SHIELD,JUMPING_SHIELD,SCREEN_WIDTH,SCREEN_HEIGHT
 ##RUNNING CTRL+. Y aparecen opciones
 
-JUMP_VELOCITY=8
+JUMP_VELOCITY=8.5
 Y_INITIAL=310
 X_INITIAL=80
 Y_D_DUCKING=30
@@ -35,14 +35,17 @@ class dinosaur(Sprite):
         self.action=S_RUNNING
         self.jump_velocity=JUMP_VELOCITY
         self.d_ducking=True
-        self.y_current=Y_INITIAL
         self.time_to_show=0
+        self.y_current=Y_INITIAL
         
     
     def run(self):
         self.image=RUNNING_IMG[self.type][self.step//5]
         self.rect=self.image.get_rect()
-        self.rect.y=self.y_current
+        ##tal vez hay que borrar este rect.y
+        self.rect.y=Y_INITIAL
+        self.y_current=self.rect.y
+        self.jump_velocity=JUMP_VELOCITY
         self.step+=1
 
     def bend(self):
@@ -53,29 +56,34 @@ class dinosaur(Sprite):
 
     def jumping(self):
         self.image=JUMPING
-        self.rect.y-=self.jump_velocity*4
-        self.y_current=self.rect.y
+        self.y_current-=self.jump_velocity*4
+        self.rect.y=self.y_current
         self.jump_velocity-=0.8
-
+        print(self.rect.y," ",self.jump_velocity)
+        if  self.jump_velocity<-JUMP_VELOCITY:
+            print("HMM: ",self.rect.y," ",self.jump_velocity)
+            self.rect.y=Y_INITIAL
+            self.y_current=Y_INITIAL
+            self.action=S_RUNNING
+            self.jump_velocity=JUMP_VELOCITY
         
     
     def update(self, user_input):
-        if user_input[pygame.K_UP]:
-            self.action=S_JUMPING
+        if self.action==S_JUMPING:
             self.jumping()
-            ##print(self.jump_velocity," ",self.rect.y)
-            ##se ejecuta 2 veces por cada pulsacion, no es un error de codigo, sino de mi teclado al pa
-            if self.jump_velocity < -JUMP_VELOCITY:
-                self.y_current=Y_INITIAL
-                self.action=S_RUNNING
-                self.jump_velocity=JUMP_VELOCITY
-                self.run()
+        elif self.action==S_BEND:
+            self.bend()
+        elif self.action==S_RUNNING:
+            self.run()
+
+        if user_input[pygame.K_UP] or self.action==S_JUMPING:
+            self.action=S_JUMPING    
         elif user_input[pygame.K_DOWN]:
             self.action=S_BEND
-            self.bend()
         else:
             self.action=S_RUNNING
-            self.run()
+        
+        
 
         self.rect.x=X_INITIAL
 

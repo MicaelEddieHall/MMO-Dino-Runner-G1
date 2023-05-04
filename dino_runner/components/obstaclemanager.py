@@ -36,4 +36,3 @@ class ObstacleManager:
     
     def reset(self):
         self.obstacles=[]
-        pass

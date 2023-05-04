@@ -60,6 +60,9 @@ class Game:
         self.obstacle_manager.reset()
         self.score.reset()
         self.power_up_manager.reset()
+        self.player.rect.y=310
+        self.player.y_current=310
+        self.player.jump_velocity=8
         
     def events(self):
         for event in pygame.event.get():
@@ -133,7 +136,6 @@ class Game:
             #agregar una imagen en la pantalla
 
         self.screen.blit(DINO_START,(center_x-49,center_y-121))            
-        ##desde la 115 hasta la 122 hacerlo en funcion, y pasar el mensaje de press any key 
         ##refrescar pantalla
         pygame.display.update()
         #manejar eventos
