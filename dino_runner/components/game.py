@@ -7,7 +7,7 @@ from dino_runner.components.dinosaur import dinosaur
 
 from dino_runner.components.power_ups.powerupmanager import PowerUpManager
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DINO_START
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, DINO_START
 
 from dino_runner.components.obstaclemanager import ObstacleManager
 
@@ -56,6 +56,7 @@ class Game:
         ##pygame.quit()
     def reset_game(self):
         self.playing = True
+        self.game_speed=20
         self.obstacle_manager.reset()
         self.score.reset()
         self.power_up_manager.reset()
@@ -81,6 +82,7 @@ class Game:
         self.obstacle_manager.draw(self.screen)
         self.score.draw(self.screen)
         self.power_up_manager.draw(self.screen)
+        self.player.draw_power_up(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -94,9 +96,11 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def on_death(self):
-        pygame.time.delay(900)
-        self.playing=False
-        self.dead_count+=1
+        is_invencible=self.player.type==SHIELD_TYPE
+        if not is_invencible:
+            pygame.time.delay(900)
+            self.playing=False
+            self.dead_count+=1
 
     def show_menu(self):
         center_x=SCREEN_WIDTH//2
@@ -110,8 +114,6 @@ class Game:
         ##abstraer el codigo de generar texto en medio, para que nos pregunte donde y en que tamaño dibujar
         
         if self.dead_count!=0:
-            self.dibuja_texto(f"{self.dead_count}",center_x,center_y+50)
-
             if self.max_score<self.score.score:
                 self.max_score=self.score.score
             self.dibuja_texto(f"max score: {self.max_score}",center_x,center_y+100)
