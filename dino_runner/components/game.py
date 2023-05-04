@@ -117,23 +117,11 @@ class Game:
         ##cambiar el fondo de pantalla
         self.screen.fill((255,255,255))
 
-        ##si no hubo muertes mostrar normal, sino mostrar el contador de muertes
-        ##mostrar mensaje de reinicio
-        ##mostrar puntaje obtenido, al parecer las 3 en una misma ventana
-        ##abstraer el codigo de generar texto en medio, para que nos pregunte donde y en que tamaño dibujar
-        
         if self.dead_count!=0:
             if self.max_score<self.score.score:
                 self.max_score=self.score.score
             self.dibuja_texto(f"max score: {self.max_score}",center_x,center_y+100)
             self.dibuja_texto(f"death count: {self.dead_count}",center_x,center_y+150)
-            #agregar un texto de inicio en la pantalla
-            ##font=pygame.font.Font('freesansbold.ttf',30)
-            ##render convierte texto en surface
-            ##text=font.render(f"{self.dead_count}",True,(0,0,0))
-            ##text_rect=text.get_rect()
-            ##text_rect.center=(center_x,center_y)
-            ##self.screen.blit(text,text_rect)
 
             ##aca usa el dibujar texto 2 veces 
         self.dibuja_texto("Press any key to start",center_x,center_y+50)

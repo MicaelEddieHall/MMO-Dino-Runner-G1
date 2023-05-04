@@ -14,7 +14,7 @@ class ObstacleManager:
         ##tuplas, desempaquetar y random.choise
 
     def update(self, game_speed,player,on_death):
-        if len(self.obstacles)<2:
+        if len(self.obstacles)<1:
             self.cactus=random.randint(0,1)
             self.Cactus=Cactus(self.list_cactus[self.cactus])
             self.Cactus.rect.y=self.list_tall[self.cactus]
