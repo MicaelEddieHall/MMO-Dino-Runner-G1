@@ -3,7 +3,7 @@ from pygame.sprite import Sprite
 
 import pygame
 
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING,DEFAULT_TYPE,SHIELD_TYPE,RUNNING_SHIELD,DUCKING_SHIELD,JUMPING_SHIELD,SCREEN_WIDTH,SCREEN_HEIGHT
+from dino_runner.utils.constants import HAMMER_TYPE, RUNNING, JUMPING, DUCKING,DEFAULT_TYPE,SHIELD_TYPE,RUNNING_SHIELD,DUCKING_SHIELD,JUMPING_SHIELD,SCREEN_WIDTH,SCREEN_HEIGHT,DUCKING_HAMMER,JUMPING_HAMMER,RUNNING_HAMMER
 ##RUNNING CTRL+. Y aparecen opciones
 
 JUMP_VELOCITY=8.5
@@ -14,9 +14,9 @@ S_JUMPING="jumping"
 S_RUNNING="running"
 S_BEND="bend"
 
-DUCKING_IMG={DEFAULT_TYPE: DUCKING,SHIELD_TYPE : DUCKING_SHIELD}
-RUNNING_IMG={DEFAULT_TYPE: RUNNING,SHIELD_TYPE : RUNNING_SHIELD}
-JUMPING_IMG={DEFAULT_TYPE: RUNNING,SHIELD_TYPE : JUMPING_SHIELD}
+DUCKING_IMG={DEFAULT_TYPE: DUCKING,SHIELD_TYPE : DUCKING_SHIELD,HAMMER_TYPE:DUCKING_HAMMER}
+RUNNING_IMG={DEFAULT_TYPE: RUNNING,SHIELD_TYPE : RUNNING_SHIELD,HAMMER_TYPE:RUNNING_HAMMER}
+JUMPING_IMG={DEFAULT_TYPE: RUNNING,SHIELD_TYPE : JUMPING_SHIELD,HAMMER_TYPE:JUMPING_HAMMER}
 
 ##del update separar cada una de las 3 acciones en 3 metodos
 ##ademas tomar en cuenta que en el bend debemos actualizar la recta para evitar bugs con los obstaculos
@@ -42,7 +42,6 @@ class dinosaur(Sprite):
     def run(self):
         self.image=RUNNING_IMG[self.type][self.step//5]
         self.rect=self.image.get_rect()
-        ##tal vez hay que borrar este rect.y
         self.rect.y=Y_INITIAL
         self.y_current=self.rect.y
         self.jump_velocity=JUMP_VELOCITY
@@ -59,9 +58,7 @@ class dinosaur(Sprite):
         self.y_current-=self.jump_velocity*4
         self.rect.y=self.y_current
         self.jump_velocity-=0.8
-        print(self.rect.y," ",self.jump_velocity)
         if  self.jump_velocity<-JUMP_VELOCITY:
-            print("HMM: ",self.rect.y," ",self.jump_velocity)
             self.rect.y=Y_INITIAL
             self.y_current=Y_INITIAL
             self.action=S_RUNNING

@@ -7,7 +7,7 @@ from dino_runner.components.dinosaur import dinosaur
 
 from dino_runner.components.power_ups.powerupmanager import PowerUpManager
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, DINO_START
+from dino_runner.utils.constants import BG, HAMMER_TYPE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, DINO_START
 
 from dino_runner.components.obstaclemanager import ObstacleManager
 
@@ -99,11 +99,14 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def on_death(self):
-        is_invencible=self.player.type==SHIELD_TYPE
+        is_invencible=self.player.type==SHIELD_TYPE or self.player.type==HAMMER_TYPE
         if not is_invencible:
             pygame.time.delay(900)
             self.playing=False
             self.dead_count+=1
+        if self.player.type==HAMMER_TYPE:
+            ##+50 score por cada arbol que rompa
+            self.score.score+=50
 
     def show_menu(self):
         center_x=SCREEN_WIDTH//2
