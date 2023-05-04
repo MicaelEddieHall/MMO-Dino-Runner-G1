@@ -80,4 +80,6 @@ class dinosaur(Sprite):
     def draw(self, screen):
         screen.blit(self.image,(self.rect.x,self.rect.y))##cada blit es una capa de dibujo
 
-
+    def on_pick_power_up(self,power_up):
+        print(power_up.type)
+        pass

@@ -4,9 +4,13 @@ from dino_runner.components.score import Score
 
 from dino_runner.components.dinosaur import dinosaur
 
+
+from dino_runner.components.power_ups.powerupmanager import PowerUpManager
+
 from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DINO_START
 
 from dino_runner.components.obstaclemanager import ObstacleManager
+
 
 class Game:
     def __init__(self):
@@ -28,6 +32,7 @@ class Game:
         self.score=Score()
         self.dead_count=0
         self.max_score=0
+        self.power_up_manager=PowerUpManager()
 
     def run(self):
         # Game loop: events - update - draw
@@ -35,7 +40,6 @@ class Game:
         while self.running:
             if not self.playing:
                 self.show_menu()
-                print("pucha")
             else:
                 self.play()
                 
@@ -43,16 +47,19 @@ class Game:
 
     def play(self):
         # Game loop: events - update - draw
-        self.playing = True
-        self.obstacle_manager.reset()
+        self.reset_game()
         while self.playing:
             self.events()
             self.update()
             self.draw()
-        print("hmm")
         ##doble pygame.quit() genera un self.screen.fill
         ##pygame.quit()
-
+    def reset_game(self):
+        self.playing = True
+        self.obstacle_manager.reset()
+        self.score.reset()
+        self.power_up_manager.reset()
+        
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -64,6 +71,7 @@ class Game:
         self.player.update(user_input)
         self.obstacle_manager.update(self.game_speed,self.player,self.on_death)
         self.score.update(self)
+        self.power_up_manager.update(self.game_speed,self.score.score,self.player)
 
     def draw(self):
         self.clock.tick(FPS)
@@ -72,6 +80,7 @@ class Game:
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.score.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
