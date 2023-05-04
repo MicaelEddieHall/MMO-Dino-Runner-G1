@@ -28,7 +28,7 @@ class ObstacleManager:
             ##print("se actualizan")
             if player.rect.colliderect(obstacle.rect):
                 ##detecta las colisiones
-                on_death()
+                on_death(self)
 
     def draw(self,screen):
         for obstacle in self.obstacles:

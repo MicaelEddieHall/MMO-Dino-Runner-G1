@@ -33,6 +33,7 @@ class Game:
         self.dead_count=0
         self.max_score=0
         self.power_up_manager=PowerUpManager()
+        
 
     def run(self):
         # Game loop: events - update - draw
@@ -98,7 +99,7 @@ class Game:
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
 
-    def on_death(self):
+    def on_death(self,obstacle_m_self):
         is_invencible=self.player.type==SHIELD_TYPE or self.player.type==HAMMER_TYPE
         if not is_invencible:
             pygame.time.delay(900)
@@ -107,6 +108,8 @@ class Game:
         if self.player.type==HAMMER_TYPE:
             ##+50 score por cada arbol que rompa
             self.score.score+=50
+            obstacle_m_self.obstacles.pop()
+
 
     def show_menu(self):
         center_x=SCREEN_WIDTH//2
