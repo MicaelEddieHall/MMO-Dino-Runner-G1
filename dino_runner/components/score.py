@@ -1,4 +1,6 @@
 import pygame
+
+from dino_runner.utils.constants import HEART_TYPE
 class Score:
     def __init__(self):
         self.score=0
@@ -7,6 +9,9 @@ class Score:
         self.score+=1
         if self.score%100==0:
             game.game_speed+=1
+        if game.player.type==HEART_TYPE:
+            self.score-=1
+            game.game_speed+=0.1
     
     def draw(self,screen):
         font=pygame.font.Font('freesansbold.ttf',22)

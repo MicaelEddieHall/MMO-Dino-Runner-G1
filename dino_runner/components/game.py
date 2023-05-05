@@ -7,7 +7,7 @@ from dino_runner.components.dinosaur import dinosaur
 
 from dino_runner.components.power_ups.powerupmanager import PowerUpManager
 
-from dino_runner.utils.constants import BG, HAMMER_TYPE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, DINO_START
+from dino_runner.utils.constants import BG, DEFAULT_TYPE, HAMMER_TYPE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, DINO_START
 
 from dino_runner.components.obstaclemanager import ObstacleManager
 
@@ -36,7 +36,6 @@ class Game:
         
 
     def run(self):
-        # Game loop: events - update - draw
         self.running = True
         while self.running:
             if not self.playing:
@@ -77,6 +76,7 @@ class Game:
         self.obstacle_manager.update(self.game_speed,self.player,self.on_death)
         self.score.update(self)
         self.power_up_manager.update(self.game_speed,self.score.score,self.player)
+        
 
     def draw(self):
         self.clock.tick(FPS)
@@ -100,13 +100,12 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def on_death(self,obstacle_m_self):
-        is_invencible=self.player.type==SHIELD_TYPE or self.player.type==HAMMER_TYPE
+        is_invencible=self.player.type!=DEFAULT_TYPE
         if not is_invencible:
             pygame.time.delay(900)
             self.playing=False
             self.dead_count+=1
         if self.player.type==HAMMER_TYPE:
-            ##+50 score por cada arbol que rompa
             self.score.score+=50
             obstacle_m_self.obstacles.pop()
 
@@ -122,17 +121,9 @@ class Game:
                 self.max_score=self.score.score
             self.dibuja_texto(f"max score: {self.max_score}",center_x,center_y+100)
             self.dibuja_texto(f"death count: {self.dead_count}",center_x,center_y+150)
-
-            ##aca usa el dibujar texto 2 veces 
         self.dibuja_texto("Press any key to start",center_x,center_y+50)
-
-
-            #agregar una imagen en la pantalla
-
         self.screen.blit(DINO_START,(center_x-49,center_y-121))            
-        ##refrescar pantalla
         pygame.display.update()
-        #manejar eventos
         self.handle_menu_events()
         
     

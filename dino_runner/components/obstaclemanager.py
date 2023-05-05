@@ -10,8 +10,6 @@ class ObstacleManager:
         self.list_tall=[325,300]
         self.cactus=0
         self.Cactus=Cactus(SMALL_CACTUS)
-        ##eso de small cactus puedes hacerlo con lista
-        ##tuplas, desempaquetar y random.choise
 
     def update(self, game_speed,player,on_death):
         if len(self.obstacles)<1:
@@ -19,13 +17,8 @@ class ObstacleManager:
             self.Cactus=Cactus(self.list_cactus[self.cactus])
             self.Cactus.rect.y=self.list_tall[self.cactus]
             self.obstacles.append(self.Cactus)
-            ##print(len(self.obstacles))
         for obstacle in self.obstacles:
             obstacle.update(game_speed,self.obstacles)
-            if(obstacle.rect.x<0):
-                self.obstacles.pop()
-            ##print(obstacle.rect.x)
-            ##print("se actualizan")
             if player.rect.colliderect(obstacle.rect):
                 ##detecta las colisiones
                 on_death(self)

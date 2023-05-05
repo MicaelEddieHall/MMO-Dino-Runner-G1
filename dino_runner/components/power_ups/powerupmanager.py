@@ -4,9 +4,13 @@ from dino_runner.components.power_ups.shield import Shield
 
 from dino_runner.components.power_ups.Hammer import Hammer
 
+from dino_runner.components.power_ups.SmallHeart import Heart
+
 import pygame
 
 import random
+
+from dino_runner.utils.constants import HEART_TYPE
 
 class PowerUpManager:
     def __init__(self):
@@ -14,12 +18,13 @@ class PowerUpManager:
         self.when_appears=0
 
     def generate_power_up(self,score):
-        power=[Shield(),Hammer()]
+        power=[Shield(),Hammer(),Heart()]
         ##ve si tiene al menos 1 elemento
-        if not self.power_ups and self.when_appears==score:
-            self.when_appears+=random.randint(300,400)
-            ##aca debo cambiar eso por un random.choise() xd
-            self.power_ups.append(power[random.randint(0,1)])
+        if not self.power_ups:
+            if self.when_appears==score:
+                self.power_ups.append(power[random.randint(0,2)])
+            elif self.when_appears<score:
+                self.when_appears+=random.randint(300,400)
             
 
     def update(self, game_speed,score,player):
@@ -31,6 +36,7 @@ class PowerUpManager:
                 player.on_pick_power_up(power_up)
                 self.power_ups.remove(power_up)
                 break
+                
 
     def draw(self,screen):
         for power_up in self.power_ups:
